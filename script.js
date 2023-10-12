@@ -1,103 +1,108 @@
-var cards = ["pikachu.png", "charmander.png", "mimikyu.png", "snorlax.png", "gyarados.png", "bulbasaur.png", "pikachu.png", "charmander.png", "mimikyu.png", "snorlax.png", "gyarados.png", "bulbasaur.png"];
-
-var c0 = document.getElementById("c0");
-var c1 = document.getElementById("c1");
-var c2 = document.getElementById("c2");
-var c3 = document.getElementById("c3");
-var c4 = document.getElementById("c4");
-var c5 = document.getElementById("c5");
-var c6 = document.getElementById("c6");
-var c7 = document.getElementById("c7");
-var c8 = document.getElementById("c8");
-var c9 = document.getElementById("c9");
-var c10 = document.getElementById("c10");
-var c11 = document.getElementById("c11");
+var cards = ["pikachu.png", "snorlax.png", "squirtle.png", "mimikyu.png", "charmander.png", "bulbasaur.png", "pikachu.png", "snorlax.png", "squirtle.png", "mimikyu.png", "charmander.png", "bulbasaur.png"]
 
 
-c0.addEventListener('click', function(){showCard(0)});
-c1.addEventListener('click', function(){showCard(1)});
-c2.addEventListener('click', function(){showCard(2)});
-c3.addEventListener('click', function(){showCard(3)});
-c4.addEventListener('click', function(){showCard(4)});
-c5.addEventListener('click', function(){showCard(5)});
-c6.addEventListener('click', function(){showCard(6)});
-c7.addEventListener('click', function(){showCard(7)});
-c8.addEventListener('click', function(){showCard(8)});
-c9.addEventListener('click', function(){showCard(9)});
-c10.addEventListener('click', function(){showCard(10)});
-c11.addEventListener('click', function(){showCard(11)});
+var c0 = document.getElementById("c0")
+var c1 = document.getElementById("c1")
+var c2 = document.getElementById("c2")
+var c3 = document.getElementById("c3")
+var c4 = document.getElementById("c4")
+var c5 = document.getElementById("c5")
+var c6 = document.getElementById("c6")
+var c7 = document.getElementById("c7")
+var c8 = document.getElementById("c8")
+var c9 = document.getElementById("c9")
+var c10 = document.getElementById("c10")
+var c11 = document.getElementById("c11")
 
-var cardCounter = 0;
-var pairNumber = 6;
-var oneVisible = false;
-var isVisible = false;
-var visibleNr = 0;
+
+c0.addEventListener('click', function(){showCard(0)})
+c1.addEventListener('click', function(){showCard(1)})
+c2.addEventListener('click', function(){showCard(2)})
+c3.addEventListener('click', function(){showCard(3)})
+c4.addEventListener('click', function(){showCard(4)})
+c5.addEventListener('click', function(){showCard(5)})
+c6.addEventListener('click', function(){showCard(6)})
+c7.addEventListener('click', function(){showCard(7)})
+c8.addEventListener('click', function(){showCard(8)})
+c9.addEventListener('click', function(){showCard(9)})
+c10.addEventListener('click', function(){showCard(10)})
+c11.addEventListener('click', function(){showCard(11)})
+
+// Lock variable that will lock clicking another cards while loading
 var lock = false;
+// variable for card visibility
+var visibleCard = false;
+var anotherCardNr = 0;
+var isAnotherCard = false;
+var leftPairs = 6;
+var moves = 0;
 
 
 function showCard(nr){
 
-    var opacityValue = $('#c'+nr).css('opacity');
+    currentCard = $('#c'+nr)
 
-    if (opacityValue != 0 && lock == false){
-        // Locking Clicking random cards
+    currentCardOpacity = currentCard.css('opacity')
+    var obraz = "url(img/"+cards[nr]+")"
+
+    if(currentCardOpacity != 0 && lock == false){
         lock = true;
-        var obraz = "url(img/" + cards[nr] + ")";
-        $("#c"+nr).css('background-image', obraz);
-        $('#c'+nr).addClass('cardActive');
-        $('#c'+nr).removeClass('card');
 
-        if(oneVisible == false){
+        currentCard.css('background-image', obraz)
+        currentCard.addClass('cardActive')
+        currentCard.removeClass('card')
 
-            //information that card is visible
-            oneVisible = true;
-            //Generating number of visible card for next draw
-            visibleNr = nr;
-            //Unlocking clicking cards
-            lock = false;
-        }
+        if(isAnotherCard == true){
 
-        else{
-            if(cards[visibleNr] == cards[nr]){
-                // Getting Pair
-                setTimeout(function(){removePair(visibleNr, nr)}, 550)
+            if(cards[anotherCardNr] == cards[nr]){
+                setTimeout(function(){pointCards(anotherCardNr, nr)}, 600)
             }
             else{
-                // Not getting Pair
-                setTimeout(function(){restoreTwoCards(visibleNr, nr)}, 1000)
+                setTimeout(function(){restoreCards(anotherCardNr, nr)}, 600)
             }
-            cardCounter ++
-            oneVisible = false;
-            $('.score').html('Turn counter: ' + cardCounter);
+            moves++
+            $('.score').html("Turn counter: "+moves)
+
+        }
+        else{
+            anotherCardNr = nr;
+            isAnotherCard = true;
+            lock = false;
+            
         }
     }
+
 }
 
-function removePair(nr1, nr2){
-    //Turning opacity of cards to 0 to not break a flex
-    $('#c'+nr1).css('opacity', '0');
-    $('#c'+nr2).css('opacity', '0');
+function pointCards(nr1, nr2){
+    $('#c'+nr1).animate({opacity:0});
+    $('#c'+nr1).removeClass('cardActive')
+    $('#c'+nr1).addClass('card')
 
-    //Reducing Pair numbers until 0
-    pairNumber --
-    if(pairNumber == 0){
-        $('.board').html("<h1>Wygrałaś/eś</h1>")
+    $('#c'+nr2).animate({opacity:0});
+    $('#c'+nr2).removeClass('cardActive')
+    $('#c'+nr2).addClass('card')
+    isAnotherCard = false
+
+    lock = false;
+    leftPairs--
+
+    if(leftPairs == 0){
+        $('.board').html("<h1>Wygrałeś</h1>")
     }
-    //unlocking clicking again
-    lock = false;
 
 }
 
+function restoreCards(nr1, nr2){
+    console.log("para")
+    $('#c'+nr1).removeAttr('style')
+    $('#c'+nr1).removeClass('cardActive')
+    $('#c'+nr1).addClass('card')
 
-function restoreTwoCards(nr1, nr2){
-    //Restoring cards to be hidden Again Should be doubled becouse of 2 cards
-    $("#c"+nr1).css('background-image', "url(img/karta.png)");
-    $('#c'+nr1).addClass('card');
-    $('#c'+nr1).removeClass('cardActive');
-
-    $("#c"+nr2).css('background-image', "url(img/karta.png)");
-    $('#c'+nr2).addClass('card');
-    $('#c'+nr2).removeClass('cardActive');
-    //unlocking clicking again
+    $('#c'+nr2).removeAttr('style')
+    $('#c'+nr2).removeClass('cardActive')
+    $('#c'+nr2).addClass('card')
+    isAnotherCard = false
     lock = false;
+
 }
