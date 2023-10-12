@@ -1,0 +1,12 @@
+#board {
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 10px;
+}
+#board .card {
+  background-image: url("img/karta.png");
+  background-size: contain;
+  width: 150px;
+  height: 150px;
+}/*# sourceMappingURL=style.css.map */
